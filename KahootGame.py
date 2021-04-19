@@ -169,3 +169,110 @@ class Game(object):
                 xCordinateText = 450
                 yCordinateText = 640
 
+    def validateAnswer(self, correctAnswer, keyPressed):
+        print("correctAnswer==>{0}".format(correctAnswer))
+        isValid = False
+        if keyPressed == pygame.K_a:
+            self.selectedAnswer = 0
+            if correctAnswer == 0:
+                isValid = True
+            else:
+                isValid = False
+        if keyPressed == pygame.K_b:
+            self.selectedAnswer = 1
+            if correctAnswer == 1:
+                isValid = True
+            else:
+                isValid = False
+        if keyPressed == pygame.K_c:
+            self.selectedAnswer = 2
+            if correctAnswer == 2:
+                isValid = True
+            else:
+                isValid = False
+        if keyPressed == pygame.K_d:
+            self.selectedAnswer = 3
+            if correctAnswer == 3:
+                isValid = True
+            else:
+                isValid = False
+        return isValid
+
+    def gameRules(self):
+        self.addBackgroudPic()
+        readRules = True
+        isPlay=True
+        while readRules:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    quit()
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_p:
+                        readRules = False
+                    if event.key == pygame.K_q:
+                        pygame.quit()
+                        quit()
+            self.displayText("Press A/B/C/D to select corresponding options",
+                             self.WHITE,
+                             680, 100, True)
+            self.displayText("Press P to play or Q to quit.",
+                             self.WHITE,
+                             680, 150, True)
+
+            pygame.display.update()
+
+    def displayText(self, text, color, xCordinate, yCordinate=0, isBig=False):
+        if isBig:
+            textSurface = self.bigFont.render(text, True, color)
+        else:
+            textSurface = self.font.render(text, True, color)
+        textRectangle = textSurface.get_rect()
+        textRectangle.center = (xCordinate, yCordinate)
+        self.screen.blit(textSurface, textRectangle)
+
+    def resultScreen(self, isLost=False):
+        isPlay = True
+        self.addBackgroudPic()
+        readRules = True
+        while readRules:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    quit()
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_p:
+                        readRules = False
+                    if event.key == pygame.K_q:
+                        pygame.quit()
+                        quit()
+            points = 0
+            if self.currentQuestion > 0:
+                points = self.points[10-(self.currentQuestion-1)]
+            if isLost:
+                self.displayText("Oops You have lost the game!!! ",
+                                 self.red,
+                                 630, 50, True
+                                 )
+                self.displayText("Better luck next time",
+                                 self.green,
+                                 680, 100, True)
+            else:
+                self.displayText("Well Played!!!",
+                                 self.red,
+                                 630, 50, True
+                                 )
+                self.displayText("You have won:-"+str(points) + " Points",
+                                 self.green,
+                                 680, 100, True)
+            self.displayText("Press P to play again or Q to end the game.",
+                             self.WHITE,
+                             660, 650, True)
+            pygame.display.update()
+            if isPlay:
+                #playsound("kahoot_lobby_music.mp3")
+                playsound("kahoot_answer.mp3")
+                isPlay = False
+        self.currentQuestion = 0
+        self.selectedAnswer = -1
+        self.playGame()
