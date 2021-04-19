@@ -117,3 +117,55 @@ class Game(object):
         rectangle.fill((255, 255, 255, alpha), special_flags=BLEND_RGBA_MIN)
         return self.screen.blit(rectangle, pos)
 
+    def addPointsTile(self):
+        yCordinate = 50
+        yCordinateText = 75
+        for index in range(11):
+            if 10-index == self.currentQuestion:
+                self.RoundedRectangle(
+                    (50, yCordinate, 200, 50), self.red, 0.5)
+            else:
+                self.RoundedRectangle(
+                    (50, yCordinate, 200, 50), self.navyBlue, 0.5)
+            self.displayText(self.points[index],
+                             self.WHITE, 150, yCordinateText)
+            yCordinate += 60
+            yCordinateText += 60
+
+    def addQuestionBox(self):
+        self.RoundedRectangle(
+            (320, 450, 950, 100), self.navyBlue, 0.5)
+        a = " "
+        b = " "
+        a,b = self.questionList[self.currentQuestion]["question"].split('.')
+        self.displayText(a, self.BLACK, 825, 480)
+        self.displayText(b, self.BLACK, 825, 520)
+
+    def addOptionBox(self, isCorrect=False):
+        yCordinate = 560
+        yCordinateText = 580
+        xCordinate = 320
+        xCordinateText = 450
+        options = self.questionList[self.currentQuestion]["options"]
+        for index in range(len(options)):
+            if self.selectedAnswer == index:
+                if isCorrect:
+                    self.RoundedRectangle(
+                        (xCordinate, yCordinate, 300, 50), self.green, 0.5)
+                else:
+                    self.RoundedRectangle(
+                        (xCordinate, yCordinate, 300, 50), self.red, 0.5)
+            else:
+                self.RoundedRectangle(
+                    (xCordinate, yCordinate, 300, 50), self.navyBlue, 0.5)
+            self.displayText(
+                options[index], self.BLACK, xCordinateText, yCordinateText)
+            if(index % 2 == 0):
+                xCordinate = 950
+                xCordinateText = 1070
+            else:
+                xCordinate = 320
+                yCordinate = 620
+                xCordinateText = 450
+                yCordinateText = 640
+
