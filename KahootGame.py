@@ -1,17 +1,20 @@
 import sys
+
 import pygame
-from pygame.locals import *
-from pygame import *
 from playsound import playsound
+from pygame import *
+from pygame.locals import *
 
 
+# Class Game for question entries
+# Array for points and questions
 class Game(object):
     points = ["11,000", "10,000", "9,000", "8,000", "7,000",
               "6,000", "5,000", "4,000", "3,000", "2,000", "1,000"]
     questionList = [
         {
             "question": "A module definition consists of the module. header and the module ________?",
-            "options": ["A) Statements" , "B) Body ", "C) Call", "D) Arguments"],
+            "options": ["A) Statements", "B) Body ", "C) Call", "D) Arguments"],
             "answer": 1
         },
         {
@@ -68,18 +71,21 @@ class Game(object):
         },
     ]
 
+    # colors implemented in the game
     WHITE = (255, 255, 255)
     BLUE = (0, 0, 255)
     BLACK = (0, 0, 0)
     currentQuestion = 0
     selectedAnswer = -1
     red = (200, 20, 20)
-    #green = (0, 255, 0)
+    # green = (0, 255, 0)
     green = (114, 180, 58)
     blue = (0, 0, 128)
     orange = (255, 128, 0)
     navyBlue = (156, 101, 226)
 
+    # ----------Functions--------------------------
+    # Welcome screen
     def __init__(self):
         pygame.init()
         pygame.display.set_caption('Kahoot Lets play and get some Points ')
@@ -88,11 +94,13 @@ class Game(object):
         self.font = pygame.font.SysFont('Arial', 25)
         self.bigFont = pygame.font.SysFont('Arial', 50)
 
+    # Background Picture
     def addBackgroudPic(self):
         bg = pygame.image.load("kahootit.jpeg")
         bg = pygame.transform.scale(bg, (1366, 768))
         self.screen.blit(bg, (0, 0))
 
+    # Question Rectangle
     def RoundedRectangle(self, rect, color, radius=0.4):
         rect = Rect(rect)
         color = Color(*color)
@@ -101,9 +109,9 @@ class Game(object):
         pos = rect.topleft
         rect.topleft = 0, 0
         rectangle = Surface(rect.size, SRCALPHA)
-        circle = Surface([min(rect.size)*3]*2, SRCALPHA)
+        circle = Surface([min(rect.size) * 3] * 2, SRCALPHA)
         draw.ellipse(circle, (0, 0, 0), circle.get_rect(), 0)
-        circle = transform.smoothscale(circle, [int(min(rect.size)*radius)]*2)
+        circle = transform.smoothscale(circle, [int(min(rect.size) * radius)] * 2)
         radius = rectangle.blit(circle, (0, 0))
         radius.bottomright = rect.bottomright
         rectangle.blit(circle, radius)
@@ -117,11 +125,12 @@ class Game(object):
         rectangle.fill((255, 255, 255, alpha), special_flags=BLEND_RGBA_MIN)
         return self.screen.blit(rectangle, pos)
 
+    # Points for each question and it's formatting
     def addPointsTile(self):
         yCordinate = 50
         yCordinateText = 75
         for index in range(11):
-            if 10-index == self.currentQuestion:
+            if 10 - index == self.currentQuestion:
                 self.RoundedRectangle(
                     (50, yCordinate, 200, 50), self.red, 0.5)
             else:
@@ -132,15 +141,17 @@ class Game(object):
             yCordinate += 60
             yCordinateText += 60
 
+    # adding the question box to game
     def addQuestionBox(self):
         self.RoundedRectangle(
             (320, 450, 950, 100), self.navyBlue, 0.5)
         a = " "
         b = " "
-        a,b = self.questionList[self.currentQuestion]["question"].split('.')
+        a, b = self.questionList[self.currentQuestion]["question"].split('.')
         self.displayText(a, self.BLACK, 825, 480)
         self.displayText(b, self.BLACK, 825, 520)
 
+    # Adding options for the question and their formatting
     def addOptionBox(self, isCorrect=False):
         yCordinate = 560
         yCordinateText = 580
@@ -160,7 +171,7 @@ class Game(object):
                     (xCordinate, yCordinate, 300, 50), self.navyBlue, 0.5)
             self.displayText(
                 options[index], self.BLACK, xCordinateText, yCordinateText)
-            if(index % 2 == 0):
+            if (index % 2 == 0):
                 xCordinate = 950
                 xCordinateText = 1070
             else:
@@ -169,6 +180,7 @@ class Game(object):
                 xCordinateText = 450
                 yCordinateText = 640
 
+    # To check if the clicked option is correct or not
     def validateAnswer(self, correctAnswer, keyPressed):
         print("correctAnswer==>{0}".format(correctAnswer))
         isValid = False
@@ -198,10 +210,11 @@ class Game(object):
                 isValid = False
         return isValid
 
+    # Rules to play the game----'P' to Play and 'Q' to quit
     def gameRules(self):
         self.addBackgroudPic()
         readRules = True
-        isPlay=True
+        isPlay = True
         while readRules:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -222,6 +235,7 @@ class Game(object):
 
             pygame.display.update()
 
+    # Formatting of text
     def displayText(self, text, color, xCordinate, yCordinate=0, isBig=False):
         if isBig:
             textSurface = self.bigFont.render(text, True, color)
@@ -231,6 +245,7 @@ class Game(object):
         textRectangle.center = (xCordinate, yCordinate)
         self.screen.blit(textSurface, textRectangle)
 
+    # Result Screen ----Either Win or Loss------
     def resultScreen(self, isLost=False):
         isPlay = True
         self.addBackgroudPic()
@@ -248,7 +263,7 @@ class Game(object):
                         quit()
             points = 0
             if self.currentQuestion > 0:
-                points = self.points[10-(self.currentQuestion-1)]
+                points = self.points[10 - (self.currentQuestion - 1)]
             if isLost:
                 self.displayText("Oops You have lost the game!!! ",
                                  self.red,
@@ -262,7 +277,7 @@ class Game(object):
                                  self.red,
                                  630, 50, True
                                  )
-                self.displayText("You have won:-"+str(points) + " Points",
+                self.displayText("You have won:-" + str(points) + " Points",
                                  self.green,
                                  680, 100, True)
             self.displayText("Press P to play again or Q to end the game.",
@@ -270,15 +285,16 @@ class Game(object):
                              660, 650, True)
             pygame.display.update()
             if isPlay:
-                #playsound("kahoot_lobby_music.mp3")
+                # playsound("kahoot_lobby_music.mp3")
                 playsound("kahoot_answer.mp3")
                 isPlay = False
         self.currentQuestion = 0
         self.selectedAnswer = -1
         self.playGame()
 
+    # Adding Music and calling background pic, pointsTile, QuestionBox and addOption function
     def playGame(self):
-        #playsound("kahoot_lobby_music.mp3")
+        # playsound("kahoot_lobby_music.mp3")
         playsound("kahoot_answer.mp3")
         self.addBackgroudPic()
         self.addPointsTile()
@@ -324,6 +340,7 @@ class Game(object):
                 isPlay = False
 
 
+# Calling main function
 if __name__ == '__main__':
     game = Game()
     game.gameRules()
