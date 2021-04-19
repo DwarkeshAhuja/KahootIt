@@ -276,3 +276,55 @@ class Game(object):
         self.currentQuestion = 0
         self.selectedAnswer = -1
         self.playGame()
+
+    def playGame(self):
+        #playsound("kahoot_lobby_music.mp3")
+        playsound("kahoot_answer.mp3")
+        self.addBackgroudPic()
+        self.addPointsTile()
+        self.addQuestionBox()
+        self.addOptionBox()
+        correctAnswer = self.questionList[self.currentQuestion]["answer"]
+        play = True
+        proceed = True
+        isPlay = True
+        while play:
+            for event in pygame.event.get():
+                if event.type == QUIT:
+                    pygame.quit()
+                    sys.exit()
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_q:
+                        self.resultScreen()
+                    elif (event.key in [pygame.K_a, pygame.K_b, pygame.K_c, pygame.K_d]):
+                        isCorrect = self.validateAnswer(
+                            correctAnswer, event.key)
+                        self.addOptionBox(isCorrect=isCorrect)
+                        pygame.display.update()
+                        pygame.time.delay(2000)
+                        if isCorrect:
+                            self.currentQuestion += 1
+                            self.selectedAnswer = -1
+                            if self.currentQuestion > 10:
+                                self.resultScreen()
+                            else:
+                                correctAnswer = self.questionList[self.currentQuestion]["answer"]
+                                self.addPointsTile()
+                                self.addQuestionBox()
+                                self.addOptionBox()
+                                pygame.display.update()
+                                playsound("kahoot_answer.mp3")
+                        else:
+                            play = False
+                            pass
+                            self.resultScreen(isLost=True)
+            pygame.display.update()
+            if isPlay:
+                playsound("kahoot_answer.mp3")
+                isPlay = False
+
+
+if __name__ == '__main__':
+    game = Game()
+    game.gameRules()
+    game.playGame()
