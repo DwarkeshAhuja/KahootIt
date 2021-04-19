@@ -67,3 +67,53 @@ class Game(object):
             "answer": 0
         },
     ]
+
+    WHITE = (255, 255, 255)
+    BLUE = (0, 0, 255)
+    BLACK = (0, 0, 0)
+    currentQuestion = 0
+    selectedAnswer = -1
+    red = (200, 20, 20)
+    #green = (0, 255, 0)
+    green = (114, 180, 58)
+    blue = (0, 0, 128)
+    orange = (255, 128, 0)
+    navyBlue = (156, 101, 226)
+
+    def __init__(self):
+        pygame.init()
+        pygame.display.set_caption('Kahoot Lets play and get some Points ')
+        self.screen = pygame.display.set_mode((1366, 768), 0, 32)
+        self.addBackgroudPic()
+        self.font = pygame.font.SysFont('Arial', 25)
+        self.bigFont = pygame.font.SysFont('Arial', 50)
+
+    def addBackgroudPic(self):
+        bg = pygame.image.load("kahootit.jpeg")
+        bg = pygame.transform.scale(bg, (1366, 768))
+        self.screen.blit(bg, (0, 0))
+
+    def RoundedRectangle(self, rect, color, radius=0.4):
+        rect = Rect(rect)
+        color = Color(*color)
+        alpha = color.a
+        color.a = 0
+        pos = rect.topleft
+        rect.topleft = 0, 0
+        rectangle = Surface(rect.size, SRCALPHA)
+        circle = Surface([min(rect.size)*3]*2, SRCALPHA)
+        draw.ellipse(circle, (0, 0, 0), circle.get_rect(), 0)
+        circle = transform.smoothscale(circle, [int(min(rect.size)*radius)]*2)
+        radius = rectangle.blit(circle, (0, 0))
+        radius.bottomright = rect.bottomright
+        rectangle.blit(circle, radius)
+        radius.topright = rect.topright
+        rectangle.blit(circle, radius)
+        radius.bottomleft = rect.bottomleft
+        rectangle.blit(circle, radius)
+        rectangle.fill((0, 0, 0), rect.inflate(-radius.w, 0))
+        rectangle.fill((0, 0, 0), rect.inflate(0, -radius.h))
+        rectangle.fill(color, special_flags=BLEND_RGBA_MAX)
+        rectangle.fill((255, 255, 255, alpha), special_flags=BLEND_RGBA_MIN)
+        return self.screen.blit(rectangle, pos)
+
