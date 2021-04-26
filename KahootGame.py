@@ -95,6 +95,7 @@ class Game(object):
     blue = (0, 0, 128)
     orange = (255, 128, 0)
     navyBlue = (156, 101, 226)
+    user = ''
 
     # ----------Functions--------------------------
     # Welcome screen
@@ -187,6 +188,7 @@ class Game(object):
         if result:
             self.logf.pack_forget()
             self.head['text'] = self.username.get() + '\n Loged In'
+            self.user = str(self.username.get())
             self.head['pady'] = 150
         else:
             ms.showerror('Oops!', 'Username Not Found.')
@@ -322,7 +324,7 @@ class Game(object):
                     if event.key == pygame.K_q:
                         pygame.quit()
                         quit()
-            self.displayText("Press A/B/C/D to select corresponding options",
+            self.displayText( self.user +" Press A/B/C/D to select corresponding options",
                              self.WHITE,
                              680, 100, True)
             self.displayText("Press P to play or Q to quit.",
